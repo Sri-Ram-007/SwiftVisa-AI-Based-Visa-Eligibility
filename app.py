@@ -275,6 +275,19 @@ elif st.session_state.step == 3:
 
     st.divider()
 
+    # -------------------------
+    # EXPLANATION SECTION (ADDED)
+    # -------------------------
+
+    section_title("Why this decision?")
+
+    if result["eligibility"] == "Eligible":
+        st.success(result["explanation"])
+    else:
+        st.error(result["explanation"])
+
+    st.divider()
+
     section_title("AI Assistant")
 
     user_input = st.text_input("Ask about documents, process...")

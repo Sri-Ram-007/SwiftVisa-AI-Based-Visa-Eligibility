@@ -174,14 +174,32 @@ def check_visa(
     retrieved_info = retrieve_visa_info(country, purpose)
 
     # ---------------------------
-    # EXPLANATION
+    # SMART EXPLANATION (UPDATED)
     # ---------------------------
 
-    explanation = f"""
-The system evaluated the applicant based on purpose ({purpose}), 
-financial status, supporting documents, and travel history.
-Final probability is {probability}% indicating {eligible}.
-"""
+    if eligible == "Eligible":
+        
+        explanation = f"The applicant appears eligible for the {visa_type} for {country}. "
+
+        if positive:
+            explanation += "This is mainly due to " + ", ".join(positive[:2]).lower() + ". "
+
+        if risks:
+            explanation += "However, there are some minor concerns such as " + ", ".join(risks[:1]).lower() + ". "
+
+        explanation += f"Overall, with a probability of {probability}%, the chances of approval are strong."
+
+    else:
+        
+        explanation = f"The applicant is currently not eligible for the {visa_type} for {country}. "
+
+        if risks:
+            explanation += "The main reasons include " + ", ".join(risks[:2]).lower() + ". "
+
+        if positive:
+            explanation += "Improving factors like " + ", ".join(positive[:1]).lower() + " may increase eligibility. "
+
+        explanation += f"With a probability of {probability}%, approval chances are currently low."
 
     # ---------------------------
     # RETURN RESULT
