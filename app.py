@@ -49,7 +49,7 @@ st.markdown("""
     border: 1px solid #333;
 }
 
-/* SECTION HEADER (SOFT GREEN BAR) */
+/* SECTION HEADER */
 .section-header {
     background: rgba(76,175,80,0.12);
     color: #4CAF50;
@@ -250,7 +250,6 @@ elif st.session_state.step == 3:
     show_progress(3)
 
     result = st.session_state.result
-    data = st.session_state.data
 
     section_title("Result Summary")
 
@@ -260,6 +259,23 @@ elif st.session_state.step == 3:
     col3.metric("Approval", f"{result['probability']}%")
 
     st.divider()
+
+    # -------------------------
+    # EXPLANATION SECTION (MOVED UP)
+    # -------------------------
+
+    section_title("Why this decision?")
+
+    if result["eligibility"] == "Eligible":
+        st.success(result["explanation"])
+    else:
+        st.error(result["explanation"])
+
+    st.divider()
+
+    # -------------------------
+    # POSITIVE & RISK FACTORS
+    # -------------------------
 
     col1, col2 = st.columns(2)
 
@@ -276,17 +292,8 @@ elif st.session_state.step == 3:
     st.divider()
 
     # -------------------------
-    # EXPLANATION SECTION (ADDED)
+    # AI ASSISTANT
     # -------------------------
-
-    section_title("Why this decision?")
-
-    if result["eligibility"] == "Eligible":
-        st.success(result["explanation"])
-    else:
-        st.error(result["explanation"])
-
-    st.divider()
 
     section_title("AI Assistant")
 
