@@ -67,7 +67,7 @@ def check_visa(
 
     purpose = purpose.lower()
 
-    # Get visa type dynamically
+    # Get visa type
     visa_type = get_visa_type(country, purpose)
     eligible = "Not Eligible"
 
@@ -89,27 +89,26 @@ def check_visa(
             positive.append("English proficiency meets requirement")
         else:
             probability -= 10
-            risks.append("English proficiency score is low")
+            risks.append("English proficiency score is below requirement")
 
         if financial_support == "Yes":
             probability += 15
-            positive.append("Financial support available for studies")
+            positive.append("Sufficient financial support for studies")
         else:
             probability -= 15
-            risks.append("Financial support unclear")
+            risks.append("Lack of clear financial support")
 
         if travel_history == "Yes":
             probability += 5
-            positive.append("Previous international travel history")
+            positive.append("Positive international travel history")
 
         if education in ["High School", "Diploma", "Bachelors Degree", "Masters Degree"]:
             probability += 10
-            positive.append("Education level suitable for study visa")
+            positive.append("Appropriate academic background")
 
-        # Country-specific tweak
         if country == "USA" and english_score < 6:
             probability -= 10
-            risks.append("USA requires higher English proficiency")
+            risks.append("English score below typical USA visa expectations")
 
     # ---------------------------
     # WORK VISA LOGIC
@@ -119,22 +118,22 @@ def check_visa(
 
         if job_offer == "Yes":
             probability += 25
-            positive.append("Job offer from employer available")
+            positive.append("Valid job offer from employer")
         else:
             probability -= 25
             risks.append("No confirmed job offer")
 
         if employment == "Employed":
             probability += 10
-            positive.append("Applicant currently employed")
+            positive.append("Currently employed")
 
         if income > 30000:
             probability += 10
-            positive.append("Income level supports work visa")
+            positive.append("Income level supports work visa eligibility")
 
         if travel_history == "Yes":
             probability += 5
-            positive.append("Previous travel history")
+            positive.append("Relevant international travel history")
 
     # ---------------------------
     # TOURIST VISA LOGIC
@@ -143,18 +142,18 @@ def check_visa(
     elif purpose == "tourism":
 
         probability += 10
-        positive.append("Tourism is a valid travel purpose")
+        positive.append("Valid tourism purpose")
 
         if income > 20000:
             probability += 10
-            positive.append("Financial stability for travel")
+            positive.append("Financial capability for travel")
         else:
             probability -= 10
-            risks.append("Low financial stability")
+            risks.append("Insufficient financial stability")
 
         if travel_history == "Yes":
             probability += 10
-            positive.append("Previous international travel history")
+            positive.append("Previous travel history supports application")
 
     # ---------------------------
     # FINAL DECISION
@@ -174,32 +173,54 @@ def check_visa(
     retrieved_info = retrieve_visa_info(country, purpose)
 
     # ---------------------------
-    # SMART EXPLANATION (UPDATED)
+    # PROFESSIONAL EXPLANATION
     # ---------------------------
 
     if eligible == "Eligible":
-        
-        explanation = f"The applicant appears eligible for the {visa_type} for {country}. "
 
-        if positive:
-            explanation += "This is mainly due to " + ", ".join(positive[:2]).lower() + ". "
+        explanation = f"""
+The applicant demonstrates strong eligibility for the {visa_type} under {country} immigration criteria.
+
+Based on the evaluation, the profile satisfies the majority of key requirements expected for this visa category.
+
+Key strengths identified in the application include:
+• {', '.join(positive) if positive else 'Relevant supporting factors present'}
+"""
 
         if risks:
-            explanation += "However, there are some minor concerns such as " + ", ".join(risks[:1]).lower() + ". "
+            explanation += f"""
+While the overall profile is strong, a few areas may require attention:
+• {', '.join(risks)}
+"""
 
-        explanation += f"Overall, with a probability of {probability}%, the chances of approval are strong."
+        explanation += f"""
+From an assessment perspective, the applicant meets the core academic, financial, and compliance requirements expected by immigration authorities.
+
+With an estimated approval probability of {probability}%, the application is considered highly favorable and likely to succeed.
+"""
 
     else:
-        
-        explanation = f"The applicant is currently not eligible for the {visa_type} for {country}. "
 
-        if risks:
-            explanation += "The main reasons include " + ", ".join(risks[:2]).lower() + ". "
+        explanation = f"""
+The applicant currently does not meet the required eligibility criteria for the {visa_type} under {country} immigration guidelines.
+
+The evaluation indicates several gaps that may impact the approval outcome.
+
+Key concerns identified include:
+• {', '.join(risks) if risks else 'Insufficient supporting criteria'}
+"""
 
         if positive:
-            explanation += "Improving factors like " + ", ".join(positive[:1]).lower() + " may increase eligibility. "
+            explanation += f"""
+However, the profile does contain some positive elements:
+• {', '.join(positive)}
+"""
 
-        explanation += f"With a probability of {probability}%, approval chances are currently low."
+        explanation += f"""
+To improve approval chances, the applicant should focus on strengthening the highlighted risk areas, particularly documentation, financial capability, or qualification alignment.
+
+At present, with an estimated probability of {probability}%, the application outcome is uncertain and requires improvement before submission.
+"""
 
     # ---------------------------
     # RETURN RESULT
